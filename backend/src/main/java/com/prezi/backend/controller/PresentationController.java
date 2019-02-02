@@ -38,7 +38,7 @@ public class PresentationController {
             return new ResponseEntity(simpleResponseDTO, HttpStatus.BAD_REQUEST);
         }
         catch (Exception ex){
-            log.error("Some error occurred while listing presentations: {} ", ex.getStackTrace());
+            log.error("Some error occurred while listing presentations: ", ex);
             SimpleResponseDTO simpleResponseDTO = new SimpleResponseDTO("Some error occurred, please try again later.", 1001);
             return new ResponseEntity(simpleResponseDTO, HttpStatus.UNPROCESSABLE_ENTITY);
         }

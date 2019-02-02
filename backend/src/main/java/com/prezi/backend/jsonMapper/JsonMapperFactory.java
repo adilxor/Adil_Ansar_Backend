@@ -10,6 +10,7 @@ import org.springframework.util.ResourceUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
@@ -20,14 +21,14 @@ public class JsonMapperFactory {
     private List<Presentation> presentations;
     public JsonMapperFactory(){
         try {
-            File file = ResourceUtils.getFile("classpath:prezis.json");
-            byte[] mapData = Files.readAllBytes(((File) file).toPath());
+            ClassLoader cl = this.getClass().getClassLoader();
+            InputStream inputStream = cl.getResourceAsStream("prezis.json");
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            setPresentations(objectMapper.readValue(mapData, new TypeReference<List<Presentation>>() {}));
+            setPresentations(objectMapper.readValue(inputStream, new TypeReference<List<Presentation>>() {}));
         }
         catch(IOException ex){
-            log.error("Could not load the file...");
+            log.error("Could not load the file...", ex);
             setPresentations(Collections.emptyList());
         }
     }
@@ -49,6 +50,9 @@ public class JsonMapperFactory {
         int toIndex = fromIndex + perPage;
         if(presentations.size() < fromIndex){
             return Collections.emptyList();
+        }
+        if(presentations.size() < toIndex){
+            toIndex = presentations.size() - fromIndex;
         }
         return presentations.subList(fromIndex, toIndex);
     }
