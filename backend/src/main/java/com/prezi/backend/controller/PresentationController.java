@@ -1,8 +1,8 @@
 package com.prezi.backend.controller;
 
-import com.prezi.backend.jsonMapper.JsonMapperFactory;
 import com.prezi.backend.model.Presentation;
 import com.prezi.backend.response.SimpleResponseDTO;
+import com.prezi.backend.service.PresentationService;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,20 +17,21 @@ import java.util.List;
 @RequestMapping("/api/v0")
 public class PresentationController {
     private static final org.slf4j.Logger log = LoggerFactory.getLogger(PresentationController.class);
-    private JsonMapperFactory jsonMapperFactory;
+    private PresentationService presentationService;
 
-    public PresentationController(JsonMapperFactory jsonMapperFactory){
-        this.jsonMapperFactory = jsonMapperFactory;
+    public PresentationController(PresentationService presentationService){
+        this.presentationService = presentationService;
     }
 
 
     @GetMapping("/presentations")
     public ResponseEntity index(
             @RequestParam(name = "page", defaultValue = "1") Integer page,
-            @RequestParam(name = "perPage", defaultValue = "10") Integer perPage
+            @RequestParam(name = "perPage", defaultValue = "10") Integer perPage,
+            @RequestParam(name = "dir", defaultValue = "1") Integer direction
             ){
         try {
-            List<Presentation> presentations = this.jsonMapperFactory.getPresentationsPaginated(page, perPage);
+            List<Presentation> presentations = this.presentationService.getPresentations(page, perPage, direction);
             return new ResponseEntity(presentations, HttpStatus.OK);
         }
         catch (IllegalArgumentException ex){

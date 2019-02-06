@@ -1,10 +1,12 @@
 package com.prezi.backend.model;
 
+import java.util.Date;
+
 public class Presentation {
     private String id;
     private String title;
     private String thumbnail;
-    private String createdAt;
+    private Date createdAt;
     private Creator creator;
 
     public String getId() {
@@ -31,11 +33,11 @@ public class Presentation {
         this.thumbnail = thumbnail;
     }
 
-    public String getCreatedAt() {
+    public Date getCreatedAt() {
         return createdAt;
     }
 
-    public void setCreatedAt(String createdAt) {
+    public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
