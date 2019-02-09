@@ -15,7 +15,7 @@ public class PresentationService {
     public PresentationService(PresentationData presentationData){
         this.presentationData = presentationData;
     }
-    public List<Presentation> getPresentations(Integer page, Integer perPage, Integer sortDirection){
-        return this.presentationData.getSortedPaginatedData(page, perPage, sortDirection);
+    public List<Presentation> getPresentations(Integer page, Integer perPage, Integer sortDirection, String title){
+        return this.presentationData.getSortedPaginatedDataByTitle(page, perPage, sortDirection, title);
     }
 }

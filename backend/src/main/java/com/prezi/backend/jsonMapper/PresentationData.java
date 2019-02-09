@@ -5,15 +5,19 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prezi.backend.constant.SortConstant;
 import com.prezi.backend.model.Presentation;
+import com.prezi.backend.utils.PaginationHelper;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Configuration
 public class PresentationData {
@@ -38,29 +42,28 @@ public class PresentationData {
         this.presentations = presentations;
     }
 
-    public List<Presentation> getSortedPaginatedData(Integer page, Integer perPage, Integer direction){
-        if (SortConstant.SortDirection.DESC.v.equals(direction)){
-            presentations.sort(Comparator.comparing(Presentation::getCreatedAt).reversed());
-        }
-        else{
-            presentations.sort(Comparator.comparing(Presentation::getCreatedAt));
-        }
-        return getPresentationsPaginated(page, perPage);
+    public List<Presentation> filterByTitle(String title){
+        return presentations
+                .stream()
+                .filter(p-> p.getTitle().startsWith(title))
+                .collect(Collectors.toList());
     }
 
-    public List<Presentation> getPresentationsPaginated(Integer page, Integer perPage){
-        if(page == null || perPage == null || page <= 0 || perPage < 0){
-            log.info("invalid pageSize: {}  and offset: {}", perPage, page);
-            throw new IllegalArgumentException("invalid pageSize: " +  perPage + " and offset: " + page);
+    public List<Presentation> getSortedPaginatedDataByTitle(Integer page, Integer perPage, Integer direction, String title){
+        List<Presentation> listToReturn;
+        if (!StringUtils.isEmpty(title)){
+            listToReturn = new ArrayList<>(filterByTitle(title));
         }
-        int fromIndex = (page - 1) * perPage;
-        int toIndex = fromIndex + perPage;
-        if(presentations.size() < fromIndex){
-            return Collections.emptyList();
+        else{
+            listToReturn = new ArrayList<>(presentations);
         }
-        if(presentations.size() < toIndex){
-            toIndex = presentations.size() - fromIndex;
+
+        if (SortConstant.SortDirection.DESC.v.equals(direction)){
+            listToReturn.sort(Comparator.comparing(Presentation::getCreatedAt).reversed());
         }
-        return presentations.subList(fromIndex, toIndex);
+        else{
+            listToReturn.sort(Comparator.comparing(Presentation::getCreatedAt));
+        }
+        return PaginationHelper.getPaginatedList(listToReturn, page, perPage);
     }
 }

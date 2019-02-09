@@ -17,6 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.mockito.Mockito.doReturn;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,26 +41,27 @@ public class PresentationControllerTest {
     public void setup() {
         //runs before each test
         mockMvc = MockMvcBuilders.standaloneSetup(presentationController).build();
-        presentationList = new PresentationListDTOBuilder().build();
+        presentationList = new PresentationListDTOBuilder(12).build();
     }
 
     @Test
     // When payments exists return records
     public void testListPresentationsSuccess() throws Exception{
-        doReturn(presentationList).when(presentationService).getPresentations(1, 10, 1);
-        mockMvc.perform(get("/api/v1/presentations")
+        doReturn(presentationList.subList(0,10)).when(presentationService).getPresentations(1, 10, 1, "");
+        mockMvc.perform(get("/api/v0/presentations")
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("page", "1")
                 .param("perPage", "10")
                 .param("sortDirection", "1"))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(10)))
                 .andExpect(jsonPath("$[0].id", is("1")))
                 .andExpect(jsonPath("$[0].title", is("Title1")))
-                .andExpect(jsonPath("$[0].thumbnail", is("thumbnail_url1")))
+                .andExpect(jsonPath("$[0].thumbnail", is("thumbnail_url")))
                 .andExpect(jsonPath("$[0].creator.name", is("Adil1")))
                 .andExpect(jsonPath("$[1].id", is("2")))
                 .andExpect(jsonPath("$[1].title", is("Title2")))
-                .andExpect(jsonPath("$[1].thumbnail", is("thumbnail_url2")))
+                .andExpect(jsonPath("$[1].thumbnail", is("thumbnail_url")))
                 .andExpect(jsonPath("$[1].creator.name", is("Adil2")));
     }
 }

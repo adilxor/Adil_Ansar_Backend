@@ -26,12 +26,13 @@ public class PresentationController {
 
     @GetMapping("/presentations")
     public ResponseEntity index(
-            @RequestParam(name = "page", defaultValue = "1") Integer page,
-            @RequestParam(name = "perPage", defaultValue = "10") Integer perPage,
-            @RequestParam(name = "dir", defaultValue = "1") Integer direction
+            @RequestParam(name = "page", defaultValue = "1", required = false) Integer page,
+            @RequestParam(name = "perPage", defaultValue = "10", required = false) Integer perPage,
+            @RequestParam(name = "dir", defaultValue = "1", required = false) Integer direction,
+            @RequestParam(name = "title", defaultValue = "", required = false) String title
             ){
         try {
-            List<Presentation> presentations = this.presentationService.getPresentations(page, perPage, direction);
+            List<Presentation> presentations = this.presentationService.getPresentations(page, perPage, direction, title);
             return new ResponseEntity(presentations, HttpStatus.OK);
         }
         catch (IllegalArgumentException ex){

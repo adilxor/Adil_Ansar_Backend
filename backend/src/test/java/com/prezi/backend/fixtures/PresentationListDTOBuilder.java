@@ -9,14 +9,19 @@ import java.util.List;
 
 public class PresentationListDTOBuilder {
     private List<Presentation> presentations = new ArrayList<>();
-    public PresentationListDTOBuilder(){
+    public PresentationListDTOBuilder(Integer count){
         Date date = new Date();
-        Creator creator1 = new CreatorDTOBuilder("Adil1", "www.adilsample1.com/profile").build();
-        Presentation presentation1 = new PresentationDTOBuilder("1", "Title1", "thumbnail_url1", date, creator1).build();
-        Creator creator2 = new CreatorDTOBuilder("Adil2", "www.adilsample2.com/profile").build();
-        Presentation presentation2 = new PresentationDTOBuilder("2", "Title2", "thumbnail_url2", date, creator2).build();
-        presentations.add(presentation1);
-        presentations.add(presentation2);
+        String baseName = "Adil";
+        String baseProfileUrl = "www.adilsample.com/profile";
+        String baseTitle = "Title";
+        int i = 0;
+        while(i < count){
+            Creator creator = new CreatorDTOBuilder(baseName + (i+1), baseProfileUrl + (i+1)).build();
+            Presentation presentation = new PresentationDTOBuilder(String.valueOf(i+1), baseTitle + (i+1), "thumbnail_url", date, creator).build();
+            presentations.add(presentation);
+            i += 1;
+        }
+
     }
     public List<Presentation> build(){return presentations;}
 }
