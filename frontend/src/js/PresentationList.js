@@ -7,6 +7,9 @@ import TableFooter from '@material-ui/core/TableFooter';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
 import Paper from '@material-ui/core/Paper';
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
@@ -14,7 +17,26 @@ import Pagination from "material-ui-flat-pagination";
 import Moment from 'react-moment';
 import SearchBar from 'material-ui-search-bar';
 import { BarLoader } from 'react-spinners';
+import TableSortLabel from '@material-ui/core/TableSortLabel';
 
+const styles = theme => ({
+  root: {
+    width: '100%',
+    marginTop: '0px',
+    overflowX: 'auto',
+  },
+  table: {
+    minWidth: 700,
+  },
+  rootMenu: {
+    flexGrow: 1,
+  },
+  row: {
+    '&:nth-of-type(odd)': {
+      backgroundColor: theme.palette.background.default,
+    },
+  },
+});
 
 const theme = createMuiTheme();
 class PresentationList extends Component {
@@ -25,7 +47,9 @@ class PresentationList extends Component {
             presentations: [], isLoading: true, offset: 0, perPage: 10, totalPages: 0, dir:1, searchByTitle: ""
         };
     this.handleSearch = this.handleSearch.bind(this);
+    this.handleSort = this.handleSort.bind(this);
   }
+  
 
     ////////////// Pagination ///////////////
     handleClick(offset) {
@@ -42,6 +66,21 @@ class PresentationList extends Component {
             function () {self.fetchPresentations();}
         )
 
+    }
+
+    handleSort(){
+      const self = this;
+      if (this.state.dir == 1){
+        this.setState({isLoading: true, dir: -1},
+          function () {self.fetchPresentations();}
+        )
+      }
+      else{
+        this.setState({isLoading: true, dir: 1},
+          function () {self.fetchPresentations();}
+        )
+      }
+      
     }
 
     fetchPresentations() {
@@ -62,11 +101,20 @@ class PresentationList extends Component {
       .then(data => this.setState({presentations: data.presentationList, isLoading: false, totalPages: data.totalCount}));
   }
 
+  getDirection(direction){
+    if (direction === -1){
+      return 'desc';
+    }
+    else{
+      return 'asc';
+    }
+  }
+
   render() {
     const { classes } = this.props;
     const CustomTableCell = withStyles(theme => ({
       head: {
-        backgroundColor: theme.palette.common.black,
+        backgroundColor: '#2D3037',
         color: theme.palette.common.white,
       },
       body: {
@@ -74,23 +122,10 @@ class PresentationList extends Component {
       },
     }))(TableCell);
 
-    const styles = theme => ({
-      root: {
-        width: '100%',
-        marginTop: theme.spacing.unit * 3,
-        overflowX: 'auto',
-      },
-      table: {
-        minWidth: 700,
-      },
-      row: {
-        '&:nth-of-type(odd)': {
-          backgroundColor: theme.palette.background.default,
-        },
-      },
-    });
-
     const {presentations, isLoading} = this.state;
+    const sortPtr = {
+      color: 'white'
+    }
 
     const presentationList = presentations.map(presentation => {
       return (
@@ -134,37 +169,52 @@ class PresentationList extends Component {
     return (
 
       <MuiThemeProvider theme={theme}>
-      <SearchBar
-            onRequestSearch={(text) => this.handleSearch(text)}
-            onCancelSearch={this.handleSearch.bind(this, "")}
-            placeholder = "Search by title..."
-            style={{
-              margin: '5px auto',
-              width: 300,
-            }}
-            value = {this.state.searchByTitle}
-          />
+      <div className={classes.rootMenu}>
+        <AppBar position="static" color="default">
+          <Toolbar>
+            <Typography align="left" variant="h6" color="inherit">
+              Presentations
+            </Typography>
+            <div className={classes.rootMenu} />
+            <SearchBar
+              align="right"
+              onRequestSearch={(text) => this.handleSearch(text)}
+              onCancelSearch={this.handleSearch.bind(this, "")}
+              placeholder = "Search by title..."
+              style={{
+                width: 300,
+              }}
+              value = {this.state.searchByTitle}
+            />
+          </Toolbar>
+        </AppBar>
+      </div>
         <Paper className={classes.root}>
             <Table className={classes.table}>
               <TableHead>
                 <TableRow>
-                   <CustomTableCell align="left" width="10%">Thumbnail</CustomTableCell>
+                   <CustomTableCell align="left" width="10%"></CustomTableCell>
                   <CustomTableCell align="left" width="15%">Id</CustomTableCell>
                   <CustomTableCell align="left" width="25%">Title</CustomTableCell>
                   <CustomTableCell align="left" width="25%">Creator</CustomTableCell>
-                  <CustomTableCell align="left" width="25%">Created At</CustomTableCell>
+                  <CustomTableCell align="left" width="25%">
+                  <TableSortLabel style={{color: 'white'}} active={true} direction={this.getDirection(this.state.dir)} onClick={this.handleSort}>
+                      Created At
+                    </TableSortLabel>
+                  </CustomTableCell>
                 </TableRow>
               </TableHead>
               {presentationListHtml}
             </Table>
-            <CssBaseline />
-              <Pagination
-                limit={this.state.perPage}
-                offset={this.state.offset}
-                total={this.state.totalPages}
-                onClick={(e, offset) => this.handleClick(offset)}
-              />
           </Paper>
+          <CssBaseline />
+          <Pagination
+            align = "center"
+            limit={this.state.perPage}
+            offset={this.state.offset}
+            total={this.state.totalPages}
+            onClick={(e, offset) => this.handleClick(offset)}
+          />
       </MuiThemeProvider>
     );
   }
@@ -174,4 +224,4 @@ PresentationList.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-export default PresentationList;
+export default withStyles(styles)(PresentationList);

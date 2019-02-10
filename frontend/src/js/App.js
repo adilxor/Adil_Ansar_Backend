@@ -6,12 +6,10 @@ import PresentationList from './PresentationList';
 
 class App extends Component {
   render() {
-    const d = {"row": "presentaion-row", "root":"presentaion-root", "table":"presentaion-table"};
     return (
       <Router>
         <Switch>
-          <Route path='/' exact={true} component={Home}/>
-          <Route path='/presentations' exact={true} component={() => <PresentationList classes={d}/>}/>
+          <Route path='/' exact={true} component={() => <PresentationList/>}/>
         </Switch>
       </Router>
     )
