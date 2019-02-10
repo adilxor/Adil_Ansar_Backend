@@ -137,7 +137,7 @@ class PresentationList extends Component {
             placeholder = "Search by title..."
             style={{
               margin: '5px auto',
-              width: 200,
+              width: 300,
             }}
             value = {this.state.searchByTitle}
           />
