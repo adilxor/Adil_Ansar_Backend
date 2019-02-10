@@ -22,7 +22,7 @@ class PresentationList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-            presentations: [], isLoading: true, offset: 0, perPage: 10, totalPages: 100, dir:1, searchByTitle: ""
+            presentations: [], isLoading: true, offset: 0, perPage: 10, totalPages: 0, dir:1, searchByTitle: ""
         };
     this.handleSearch = this.handleSearch.bind(this);
   }
@@ -38,7 +38,7 @@ class PresentationList extends Component {
 
     handleSearch(text){
         const self = this;
-        this.setState({isLoading: true, searchByTitle: text},
+        this.setState({isLoading: true, searchByTitle: text, offset: 0 },
             function () {self.fetchPresentations();}
         )
 
@@ -95,12 +95,15 @@ class PresentationList extends Component {
     const presentationList = presentations.map(presentation => {
       return (
         <TableRow className={classes.row} key={presentation.id}>
-          <CustomTableCell component="th" scope="row" align="left">{presentation.id}</CustomTableCell>
-          <CustomTableCell align="left">{presentation.title}</CustomTableCell>
-          <CustomTableCell align="left">
+          <CustomTableCell component="th" scope="row" align="left" width="10%">
+            <img height="30px" src={presentation.thumbnail}/>
+          </CustomTableCell>
+          <CustomTableCell component="th" scope="row" align="left" width="15%">{presentation.id}</CustomTableCell>
+          <CustomTableCell align="left" width="25%">{presentation.title}</CustomTableCell>
+          <CustomTableCell align="left" width="25%">
             <a href={presentation.creator.profileUrl} target="_blank">{presentation.creator.name}</a>
           </CustomTableCell>
-          <CustomTableCell align="left">
+          <CustomTableCell align="left" width="25%">
             <Moment format="MMM, D YYYY" withTitle>{presentation.createdAt}</Moment>
           </CustomTableCell>
         </TableRow>
@@ -145,23 +148,22 @@ class PresentationList extends Component {
             <Table className={classes.table}>
               <TableHead>
                 <TableRow>
-                  <CustomTableCell align="left">Id</CustomTableCell>
-                  <CustomTableCell align="left">Title</CustomTableCell>
-                  <CustomTableCell align="left">Creator</CustomTableCell>
-                  <CustomTableCell align="left">Created At</CustomTableCell>
+                   <CustomTableCell align="left" width="10%">Thumbnail</CustomTableCell>
+                  <CustomTableCell align="left" width="15%">Id</CustomTableCell>
+                  <CustomTableCell align="left" width="25%">Title</CustomTableCell>
+                  <CustomTableCell align="left" width="25%">Creator</CustomTableCell>
+                  <CustomTableCell align="left" width="25%">Created At</CustomTableCell>
                 </TableRow>
               </TableHead>
-                {presentationListHtml}
-              <TableFooter>
-                  <CssBaseline />
-                  <Pagination
-                    limit={this.state.perPage}
-                    offset={this.state.offset}
-                    total={this.state.totalPages}
-                    onClick={(e, offset) => this.handleClick(offset)}
-                  />
-                </TableFooter>
+              {presentationListHtml}
             </Table>
+            <CssBaseline />
+              <Pagination
+                limit={this.state.perPage}
+                offset={this.state.offset}
+                total={this.state.totalPages}
+                onClick={(e, offset) => this.handleClick(offset)}
+              />
           </Paper>
       </MuiThemeProvider>
     );
