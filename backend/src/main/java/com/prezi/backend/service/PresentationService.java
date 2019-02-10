@@ -2,6 +2,7 @@ package com.prezi.backend.service;
 
 import com.prezi.backend.jsonMapper.PresentationData;
 import com.prezi.backend.model.Presentation;
+import com.prezi.backend.response.PresentationResponseDTO;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class PresentationService {
     public PresentationService(PresentationData presentationData){
         this.presentationData = presentationData;
     }
-    public List<Presentation> getPresentations(Integer page, Integer perPage, Integer sortDirection, String title){
+    public PresentationResponseDTO getPresentations(Integer page, Integer perPage, Integer sortDirection, String title){
         return this.presentationData.getSortedPaginatedDataByTitle(page, perPage, sortDirection, title);
     }
 }

@@ -1,6 +1,7 @@
 package com.prezi.backend.controller;
 
 import com.prezi.backend.model.Presentation;
+import com.prezi.backend.response.PresentationResponseDTO;
 import com.prezi.backend.response.SimpleResponseDTO;
 import com.prezi.backend.service.PresentationService;
 import org.slf4j.LoggerFactory;
@@ -32,8 +33,8 @@ public class PresentationController {
             @RequestParam(name = "title", defaultValue = "", required = false) String title
             ){
         try {
-            List<Presentation> presentations = this.presentationService.getPresentations(page, perPage, direction, title);
-            return new ResponseEntity(presentations, HttpStatus.OK);
+            PresentationResponseDTO presentationResponseDTO = this.presentationService.getPresentations(page, perPage, direction, title);
+            return new ResponseEntity(presentationResponseDTO, HttpStatus.OK);
         }
         catch (IllegalArgumentException ex){
             SimpleResponseDTO simpleResponseDTO = new SimpleResponseDTO("Page size or page number is invalid.", 1000);

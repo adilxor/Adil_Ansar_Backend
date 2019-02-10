@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.prezi.backend.constant.SortConstant;
 import com.prezi.backend.model.Presentation;
+import com.prezi.backend.response.PresentationResponseDTO;
 import com.prezi.backend.utils.PaginationHelper;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.stream.Collectors;
 
 @Configuration
@@ -29,6 +31,7 @@ public class PresentationData {
             InputStream inputStream = cl.getResourceAsStream("prezis.json");
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.setDateFormat(new SimpleDateFormat("MMM dd, yyyy"));
+            objectMapper.setTimeZone(TimeZone.getTimeZone("GMT"));
             objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
             setPresentations(objectMapper.readValue(inputStream, new TypeReference<List<Presentation>>() {}));
         }
@@ -49,21 +52,22 @@ public class PresentationData {
                 .collect(Collectors.toList());
     }
 
-    public List<Presentation> getSortedPaginatedDataByTitle(Integer page, Integer perPage, Integer direction, String title){
+    public PresentationResponseDTO getSortedPaginatedDataByTitle(Integer page, Integer perPage, Integer direction, String title){
         List<Presentation> listToReturn;
+
         if (!StringUtils.isEmpty(title)){
             listToReturn = new ArrayList<>(filterByTitle(title));
         }
         else{
             listToReturn = new ArrayList<>(presentations);
         }
-
         if (SortConstant.SortDirection.DESC.v.equals(direction)){
             listToReturn.sort(Comparator.comparing(Presentation::getCreatedAt).reversed());
         }
         else{
             listToReturn.sort(Comparator.comparing(Presentation::getCreatedAt));
         }
-        return PaginationHelper.getPaginatedList(listToReturn, page, perPage);
+        PresentationResponseDTO presentationResponseDTO = new PresentationResponseDTO(PaginationHelper.getPaginatedList(listToReturn, page, perPage), listToReturn.size());
+        return presentationResponseDTO;
     }
 }
