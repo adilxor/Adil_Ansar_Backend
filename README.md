@@ -46,9 +46,17 @@ Now go to `localhost:3000`
 
 
 
-
 Demo Url:
 http://pzapp.southindia.cloudapp.azure.com/
 
 Code Coverage and Code Quality report
 http://pzapp.southindia.cloudapp.azure.com/sonarqube/dashboard?id=com.prezi%3Abackend
+
+
+**Things that can be made better given more time:**
+
+1. Optimize title search by adding a caching layer and storing data in form of trie.
+2. Refractor frontend code a bit.
+4. Write unit test cases for frontend.
+5. UX/UI can be improved a bit.
+6. Allow user to chose page size and make pagination ux a bit better.
