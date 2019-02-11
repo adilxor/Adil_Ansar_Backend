@@ -1,6 +1,5 @@
 package com.prezi.backend.controller;
 
-import com.prezi.backend.model.Presentation;
 import com.prezi.backend.response.PresentationResponseDTO;
 import com.prezi.backend.response.SimpleResponseDTO;
 import com.prezi.backend.service.PresentationService;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v0")
@@ -24,6 +22,17 @@ public class PresentationController {
         this.presentationService = presentationService;
     }
 
+
+    /*
+     API to List Presentations sorted by createdAt (Paginated)
+     Params:
+        1. page (page number)
+        2. perPage (number of data to show per page)
+        3. dir (direction of sorting [sort by createdAt], 1 = ascending, -1 = descending)
+        4. title (search by title, leave empty to list all)
+      Returns:
+        An object of format: {presentationList: [], totalCount: 0}
+     */
 
     @GetMapping("/presentations")
     public ResponseEntity index(
@@ -45,16 +54,5 @@ public class PresentationController {
             SimpleResponseDTO simpleResponseDTO = new SimpleResponseDTO("Some error occurred, please try again later.", 1001);
             return new ResponseEntity(simpleResponseDTO, HttpStatus.UNPROCESSABLE_ENTITY);
         }
-
     }
-//
-//    @GetMapping("/presentations/{id}")
-//    public ResponseEntity get(){
-//        List<Presentation> presentations = this.jsonMapperFactory.getPresentations();
-//        return new ResponseEntity(
-//                new SimpleResponseDTO("Your response has been logged successfully"),
-//                HttpStatus.OK
-//        );
-//    }
-
 }

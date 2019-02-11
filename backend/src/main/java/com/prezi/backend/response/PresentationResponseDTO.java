@@ -6,8 +6,8 @@ import java.io.Serializable;
 import java.util.List;
 
 public class PresentationResponseDTO implements Serializable {
-    List<Presentation> presentationList;
-    Integer totalCount;
+    private List<Presentation> presentationList;
+    private Integer totalCount;
     public PresentationResponseDTO(List<Presentation> presentationList, Integer totalCount){
         this.totalCount = totalCount;
         this.presentationList = presentationList;

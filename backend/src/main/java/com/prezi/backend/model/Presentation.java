@@ -1,8 +1,10 @@
 package com.prezi.backend.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class Presentation {
+public class Presentation implements Serializable {
+    private static final long serialVersionUID = 2405172041950251807L;
     private String id;
     private String title;
     private String thumbnail;

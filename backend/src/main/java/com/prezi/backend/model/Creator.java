@@ -1,6 +1,9 @@
 package com.prezi.backend.model;
 
-public class Creator {
+import java.io.Serializable;
+
+public class Creator implements Serializable {
+    private static final long serialVersionUID = 1905122041950251207L;
     private String name;
     private String profileUrl;
 
