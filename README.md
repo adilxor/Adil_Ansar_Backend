@@ -60,3 +60,5 @@ http://pzapp.southindia.cloudapp.azure.com/sonarqube/dashboard?id=com.prezi%3Aba
 4. Write unit test cases for frontend.
 5. UX/UI can be improved a bit.
 6. Allow user to chose page size and make pagination ux a bit better.
+7. URL in the url bar does not hold pagination context on reload.
+8. search bar is case sensitive (MAJOR)
